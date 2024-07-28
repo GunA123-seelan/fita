@@ -4,111 +4,100 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SliceTitle from './SliceTitle';
 import SliceDes from './SliceDes';
+import "./ProductList.css";
 import SearchItem from '../SearchItem/SearchItem';
+import Fav from '../Favourite/Fav';
+const ProductList = () => {  
+  const[product,setProduct]=useState([]);
+  const[search,setSearch]=useState([]);
+  const[favArr,setFavArr]=useState(JSON.parse(localStorage.getItem('id')) || []);
 
-const ProductList = () => {
-const[product,setProduct]=useState([]);
-const[search,setSearch]=useState([]);
-
-const[favArr,setFavArr]=useState(JSON.parse(localStorage.getItem('fita')) || []);
-  // 'https://fakestoreapi.com/products/
 
   useEffect(()=>{
+    // https://fakestoreapi.com/products
     fetch('https://fakestoreapi.com/products')
     .then(res=>res.json())
     .then(data=>
-            {
-              setProduct(data)
-              setSearch(data)
-              console.log("stage 1",data);
-            }
-          )
-          
-        },[]);
+      // console.log(data)
+      {
+        setProduct(data)
+        setSearch(data)
 
-  useEffect(()=>{
-    if(product.lengt >0){
-      console.log("productload..",product);
-    }
-  },[product])
+      }
+    )
+  },[])
+  // console.log("step==1==>",product);
 
-  const handleSearch=(searchItem)=>{
-    console.log("searc",searchItem);
-    if(searchItem === 'all'){
+  const handleSearch=(searchVal)=>{
+    console.log("searchItem===>",searchVal);
+    // filter
+    if(searchVal === 'all'){
       setSearch(product);
     }else{
-      console.log("searchItem are",searchItem);
-      // const resSearch = product.filter((search)=>search.category === searchItem);
-      const resSearch = product.filter(product =>
-        product.category.toLowerCase().includes(searchItem.toLowerCase()) ||
-        product.title.toLowerCase().includes(searchItem.toLowerCase())
-      );
-      console.log(resSearch);
-      setSearch(resSearch);
+      // const searchRes = product.filter((s)=>s.category === searchVal);
+      // console.log("res",searchRes);
+      // setSearch(searchRes);
+
+      const searchRes = product.filter((s)=>
+        s.title.toLowerCase().includes(searchVal.toLowerCase()) 
+      || s.category.toLowerCase().includes(searchVal.toLowerCase()));
+      setSearch(searchRes);
+      // console.log(searchRes);
     }
   }
+  const fav=(favid)=>{
+    console.log("selected Fav id is ==  ", favid);
+    const favRes = product.find((fav)=>fav.id === favid)
+    
 
-const favs=(idd)=>{
-console.log(idd); 
-  const favItem = product.find((fav)=>fav.id === idd);
-  console.log(favItem);
+    const isFav = favArr.some((so)=>so.id === favid);
+    console.log("isFav===",isFav);
+    if(isFav){
+      console.log("already exists so delete");
+      const deleteArr = favArr.filter((deleteItem)=>deleteItem.id !== favid);
+      localStorage.setItem('id',JSON.stringify(deleteArr));
+      setFavArr(deleteArr);
+    }else{
+      console.log("new Item....");
+      console.log("favItem",favRes);
+      const tempArr = [...favArr,{...favRes,fav:true}];
+      console.log("tempArr",tempArr);
+      localStorage.setItem('id',JSON.stringify(tempArr));
+      setFavArr(tempArr);
+    }
 
-  const isFav = favArr.some((item)=>item.id === idd);
-  console.log(isFav);
-
-  if(isFav){
-    console.log("already exist");
-    const deleteArr = favArr.filter((favItem)=>favItem.id !== idd);
-    localStorage.setItem('fita',JSON.stringify(deleteArr));
-    setFavArr(deleteArr);
-  }else{
-    console.log("new Item..");
-    const tempArr=[...favArr,{...favItem,fav:true}];
-    console.log(tempArr);
-    localStorage.setItem("fita",JSON.stringify(tempArr));
-    setFavArr(tempArr);
   }
-}
-
-
   return (
-    <>
-  {/* search */}
-    <SearchItem search={handleSearch} />
-
-
-    <Container>
-    <Row>
-      {search.length > 0 ? 
-      <>
-         { search.map((item)=>(
-        <Col xs={12} sm={8} md={6} lg={3} className='d-flex mb-4'  key={item.id}>
-          <Card style={{ width: '18rem',    padding: '30px' }}>
-          <Card.Img variant="top" src={item.image} width={200} height={200}/>
-          <Card.Body>
-          {/* <Card.Title>{item.title}</Card.Title> */}
-          <SliceTitle title={item.title} maxLen={10}/>
-          {/* <Card.Text>
-            {item.description}
-            </Card.Text> */}
-          <SliceDes des={item.description} max={55}/>
-          <div style={{display: 'flex',gap: '10px'}}>
-          <Button variant="primary">Add Cart</Button>
-          <Button variant="outline-dark" 
-          style={{"background":favArr.some((fav)=>fav.id === item.id) ? 'red':''}}
-          onClick={()=>favs(item.id)}>Fav Cart</Button>
-          </div>
-          </Card.Body>
-          </Card>
+    <div>
+      <SearchItem search={handleSearch}/>
+      {/* <h1 className="sample" style={{fontWeight:'800'}}>Welcome</h1> */}
+      <Container>
+        <Row>
+      {
+        search.map((it)=>
+          <Col xs={12} sm={6} md={4} lg={4} key={it.id}>
+        <Card style={{ width: '18rem' }} >
+       <Card.Img variant="top" src={it.image} style={{width:'100px',height:'100px'}}/>
+       <Card.Body>
+         <Card.Title>{it.title}</Card.Title>
+         {/* <Card.Text>
+          {it.description}
+         </Card.Text> */}
+         <SliceDes des={it.description} max={25}/>
+         <Button variant="primary">Add Cart</Button>
+         <Button variant="outline-dark" 
+         style={{'background':favArr.some((ar)=>ar.id === it.id) ? 'red' :''}}
+         onClick={()=>fav(it.id)}
+         >Fav Cart</Button>
+       </Card.Body>
+     </Card>
         </Col>
-      )) }
-      </>: "No Data"}
-   
-    </Row>
-  </Container>
-</>
+)          
+      }
+         </Row>
+      </Container>
+    </div>
   )
 }
 

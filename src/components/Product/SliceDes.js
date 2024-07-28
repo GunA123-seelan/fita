@@ -1,14 +1,17 @@
-import React,{useState} from "react";
+import React,{useState} from 'react'
 
-const SliceDes=({des,max})=>{
-    const[showDes,setShowDes]=useState(false);
-    const description = des.length>max ? des.slice(0,max)+'...':des;
-    const changeDes=()=>{
-        setShowDes(!showDes)
-    }
-    return (
-        <p>{showDes ? des: description } <span onClick={changeDes} style={{color:'red',cursor:'pointer'}}>{showDes ? 'close': 'open'}</span></p>
-    )
+const SliceDes = ({des,max}) => {
+    // console.log("mydes",des,max);
+    const[show,setShow]=useState(false);
+    const text=des.length > max ? des.slice(0,max)+'....' : des;
+    // console.log(text);
+
+    const changeDes=()=>[
+        setShow(!show)
+    ]
+  return (
+    <div>{show ? des:text} <span onClick={changeDes}>{show ? 'Less' : 'More'}</span></div>
+  )
 }
 
-export default SliceDes;
+export default SliceDes
