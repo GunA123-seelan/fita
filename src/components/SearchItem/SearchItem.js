@@ -12,5 +12,6 @@ const SearchItem = ({search}) => {
    </div>
   )
 }
+ 
 
 export default SearchItem

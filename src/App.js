@@ -11,7 +11,7 @@ import RegisterForm from './components/Register/RegisterForm';
 function App() {
   return (
     <div>
-      <Nav className="justify-content-center">
+      <Nav className="justify-content-center"> 
       {/* <Navbar.Brand href="/">G-Shop</Navbar.Brand> */}
         <Nav.Item>
           <Nav.Link href="/">Home</Nav.Link>

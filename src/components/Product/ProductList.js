@@ -5,9 +5,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SliceDes from './SliceDes';
-import "./ProductList.css";
+// import "./ProductList.css";
 import SearchItem from '../SearchItem/SearchItem';
-import Fav from '../Favourite/Fav';
+
 const ProductList = () => {  
   const[product,setProduct]=useState([]);
   const[search,setSearch]=useState([]);
@@ -76,7 +76,7 @@ const ProductList = () => {
         <Row>
       {
         search.map((it)=>
-          <Col xs={12} sm={6} md={4} lg={4} key={it.id}>
+          <Col xs={12} sm={6} lg={4} key={it.id}>
         <Card style={{ width: '18rem' }} >
        <Card.Img variant="top" src={it.image} style={{width:'100px',height:'100px'}}/>
        <Card.Body>
